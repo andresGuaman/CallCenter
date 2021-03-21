@@ -1,6 +1,6 @@
-import os
 from flask import request, jsonify
-from app import app, mongo
+from modulos.app import app, mongo
+import os
 
 ROOT_PATCH = os.environ.get('ROOT_PATCH')
 

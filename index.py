@@ -9,7 +9,8 @@ os.environ.update({'ENV':'desarrollo'})
 os.environ.update({'PUERTO':'4000'})
 sys.path.append(os.path.join(ROOT_PATCH, 'modulos'))
 
-from app import app
+from modulos.app import app, mongo
+
 if __name__ == '__main__':
     
     app.config['DEBUG'] = os.environ.get('ENV') == 'desarrollo'
