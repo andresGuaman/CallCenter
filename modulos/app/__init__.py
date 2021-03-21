@@ -22,3 +22,5 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['MONGO_URI']= 'mongodb+srv://agmr:123@callcenter.am91v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 app.json_encoder = JSONEncoder
 mongo = PyMongo(app)
+
+from app.controladores import Usuarios
