@@ -4,7 +4,7 @@ import os
 
 ROOT_PATCH = os.environ.get('ROOT_PATCH')
 
-@app.route('/usuario/inicio', methods = ['GET'])
+@app.route('/usuario/lista', methods = ['GET'])
 def inicio():
     if request.method == 'GET':
         data = mongo.db.usuarios.find({})
@@ -17,12 +17,12 @@ def inicio():
 def create():
 
     if request.method == 'POST':
-        
+
         data = request.get_json()
         save = mongo.db.usuarios.insert_one(data)
 
         print (data)
-        
+
         if valicacion_ususario(data):
             return jsonify({'transaccion':True, 'message':'User created successfully' ,'data':list(data)})
         else:
