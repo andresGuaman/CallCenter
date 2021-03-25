@@ -7,14 +7,14 @@ import os
 ROOT_PATCH = os.environ.get('ROOT_PATCH')
 DOMINIO_CORREO_ISTA = '@tecazuay.edu.ec'
 
-@app.route('/usuario/lista', methods = ['GET'])
-def inicio():
+@app.route('/usuario/correo/<string:dato>', methods = ['GET'])
+def inicio(dato):
     if request.method == 'GET':
-        data = mongo.db.usuarios.find({})
+        data = mongo.db.usuarios.find({'correo':dato})
         lista = list(data)
         if data == None:
             data =[]
-        return jsonify({'transacción':True, 'data':lista})
+        return jsonify({'transacción':True,'message':'Consula exitosa', 'data':lista})
 
 @app.route('/usuario/crear', methods = ['POST'])
 def create():
