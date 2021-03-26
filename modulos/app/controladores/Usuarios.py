@@ -16,6 +16,15 @@ def inicio(dato):
             data =[]
         return jsonify({'transacción':True,'message':'Consula exitosa', 'data':lista})
 
+@app.route('/usuario/password/<email>/<string:passw>', methods = ['GET'])
+def login_pass(email, passw):
+    if request.method == 'GET':
+        data = mongo.db.usuarios.find_one({'correo':email, 'password':passw})
+        if data:
+            return jsonify({'transacción':True,'message':'Login Correcto', 'data':passw})
+        else:
+            return jsonify({'transacción':False,'message':'Contraseña incorrecta', 'data':passw})   
+
 @app.route('/usuario/crear', methods = ['POST'])
 def create():
 
