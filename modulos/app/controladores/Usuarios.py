@@ -24,7 +24,7 @@ def create():
         data = request.get_json()
         response = validar_usuario(data)
 
-        if response[0]:
+        if response[0] == True:
             save = mongo.db.usuarios.insert_one(data)
             return jsonify({'transaccion':True, 'message':response[1] ,'data':list(data)})
         else:
@@ -34,18 +34,29 @@ def create():
 
 def validar_usuario(data) -> tuple:
 
-    if validar_email(data.get('correo')) == False:
-        return (False, 'Correo incorrecto')
+    if data.get('correo'):
+        if validar_email(data.get('correo')) == False:
+            return (False, 'Correo incorrecto')
+    else:
+        return (False, 'Correo Vacio')
 
-    if validar_nombres([data.get('nombre'), data.get('apellido')]):
-        return (False, 'Nombre o apellido incorreto')
+    if data.get('nombre') and data.get('apellido'):
+        if validar_nombres([data.get('nombre'), data.get('apellido')]) == False:
+            return (False, 'Nombres incorretos')
+    else:
+        return (False, 'Nombres vacíos')
 
-    if validar_password(data.get('password')):
-        return (False, 'Contraseña incorrecta')
+    if data.get('password'):
+        if validar_password(data.get('password') == False):
+            return (False, 'Contraseña incorrecta')
+    else:
+        return (False, 'Contraseña vacío')
 
     return (True, 'Datos correctos')
 
 def validar_nombres(nombres: list) -> bool:
+
+    print (nombres)
 
     if nombres[0] and nombres[1]:
 
