@@ -47,7 +47,7 @@ def validar_usuario(data) -> tuple:
 
 def validar_nombres(nombres: list) -> bool:
 
-    if list[0] and list[1]:
+    if nombres[0] and nombres[1]:
 
         for n in nombres:
             if n.strip() and n.isalpha() and n.count(' ') < 1:
