@@ -64,9 +64,6 @@ def validar_usuario(data) -> tuple:
     return (True, 'Datos correctos')
 
 def validar_nombres(nombres: list) -> bool:
-
-    print (nombres)
-
     if nombres[0] and nombres[1]:
 
         for n in nombres:
