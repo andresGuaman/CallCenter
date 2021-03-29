@@ -4,16 +4,25 @@ from modulos.app import app, mongo
 import os
 
 ROOT_PATCH = os.environ.get('ROOT_PATH')
-DOMINIO_CORREO_ISTA = '@tecazuay.edu.ec'
 
 @app.route('/administrador/admin-list', methods = ['GET'])
 def listar_admin():
     if request.method == 'GET':
         data = mongo.db.administradores.find({})
         lista = list(data)
+        print(str(lista))
         if data == None:
             data = []
         return jsonify({"transaccion":True, "data":lista})
+
+@app.route('/administrador/login/<string:data>', methods=['GET'])
+def login_admin(data):
+    if request.method == 'GET':
+        data = mongo.db.administrador.find({"correo":"'"+data+"'"})
+        lista = list(data)
+        if data == None:
+            data = []
+        return jsonify({'transaccion':True, 'mensaje':'correo encontrado', 'data':lista})                
 
 @app.route('/administrador/crear-admin', methods=['POST'])
 def crear_admin():
@@ -27,7 +36,7 @@ def crear_admin():
 
 def validar_admin(data)->tuple:
 
-    if validar_email(data.get('correo')) == False:
+    if validar_emailAdmin(data.get('correo')) == False:
         return (False, 'Correo Incorrecto')
 
     if validar_nombres([data.get('nombre'), data.get('apellido')]) == False:
@@ -49,6 +58,28 @@ def validar_rol(rol: str) -> bool:
             return False
     else:
         return False
+
+def validar_emailAdmin(correo: str) -> bool:
+    if correo:
+        if correo.strip() and len(correo) >= 17 and len(correo) < 75 and correo.count('@') == 1:
+
+            try:
+                start_email = correo.split('@')[0]
+
+                if start_email.replace('.','').isalpha():
+                    return True
+                else:
+                    return False
+
+            except Exception:
+                return False
+
+        else:
+            return False
+    else:
+        return False
+
+
 
 @app.route('/administrador/update-admin/{idadmin}', methods=['POST'])
 def update_admin():
