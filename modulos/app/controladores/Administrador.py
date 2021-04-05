@@ -18,11 +18,12 @@ def listar_admin():
 @app.route('/administrador/login/<string:data>', methods=['GET'])
 def login_admin(data):
     if request.method == 'GET':
-        data = mongo.db.administrador.find({"correo":"'"+data+"'"})
-        lista = list(data)
-        if data == None:
-            data = []
-        return jsonify({'transaccion':True, 'mensaje':'correo encontrado', 'data':lista})                
+        salida = mongo.db.administradores.find({"correo":"'"+data+"'"})
+        print(str(salida))
+        if salida:
+            return jsonify({'transaccion':True, 'mensaje':"el usuario  existe"})    
+        else:
+            return jsonify({'transaccion':False, 'mensaje':"el usuario no existe"})             
 
 @app.route('/administrador/crear-admin', methods=['POST'])
 def crear_admin():
