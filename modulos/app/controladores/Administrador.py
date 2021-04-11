@@ -5,15 +5,17 @@ import os
 
 ROOT_PATCH = os.environ.get('ROOT_PATH')
 
-@app.route('/administrador/admin-list', methods = ['GET'])
+@app.route('/administrador/listar', methods = ['GET'])
 def listar_admin():
+    
     if request.method == 'GET':
+
         data = mongo.db.administradores.find({})
-        lista = list(data)
-        print(str(lista))
-        if data == None:
-            data = []
-        return jsonify({"transaccion":True, "data":lista})
+    
+        if data and data != None:
+            return jsonify({"transaccion":True, 'mensaje':'Transacción exitosa','data':list(data)})
+        else:
+            return jsonify({"transaccion":False, 'mensaje':'Error de transacción', "data":[]})
 
 @app.route('/administrador/login/<string:data>', methods=['GET'])
 def login_admin(data):
