@@ -1,5 +1,4 @@
 from modulos.app import app, mongo
-from modulos.app.controladores.Login import User
 from flask import request, jsonify, session
 
 import os

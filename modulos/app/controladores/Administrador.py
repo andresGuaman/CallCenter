@@ -13,7 +13,7 @@ def listar_admin():
         data = mongo.db.administradores.find({})
     
         if data and data != None:
-            return jsonify({"transaccion":True, 'mensaje':'Transacción exitosa','data':list(data)})
+            return jsonify({"transaccion":True, 'mensaje':'Transacción exitosa',data:list(data)})
         else:
             return jsonify({"transaccion":False, 'mensaje':'Error de transacción', "data":[]})
 
