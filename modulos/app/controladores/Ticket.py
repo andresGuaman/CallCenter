@@ -16,7 +16,16 @@ def detalleTicket(ticket):
         if data == None:
             data =[]
         return jsonify({'transacción':True,'message':'Consula exitosa(detalle)', 'data':lista})
-
+    
+@app.route('/detalle/caso/<string:correo>', methods = ['GET'])
+def data(correo):
+    if request.method == 'GET':
+        dat = mongo.db.tickets.find({"usuario_email":correo})
+        lista = list(dat)
+        if dat == None:
+            return jsonify({'transacción':True, 'message':'No hay datos en la coleccion solicitada', 'data':lista})
+        return jsonify({'transacción':True, 'message':'Consulta exitosa', 'data':lista})
+    
 @app.route('/ticket/crear-ticket', methods=['POST'])
 def crear_ticket():
     data=request.get_json()
