@@ -8,7 +8,7 @@ import os
 
 ROOT_PATCH = os.environ.get('ROOT_PATCH')
 
-@app.route('/detalle/caso/<string:ticket>', methods = ['GET'])
+@app.route('/detalle/ticket/<string:ticket>', methods = ['GET'])
 def detalleTicket(ticket):
     if request.method == 'GET':
         data = mongo.db.tickets.find({'ticket_id': ticket})

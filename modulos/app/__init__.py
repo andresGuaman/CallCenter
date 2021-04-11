@@ -26,4 +26,4 @@ app.json_encoder = JSONEncoder
 
 mongo = PyMongo(app)
 
-from modulos.app.controladores import Usuarios, Administrador, Mensajes, Parametros, Ticket
+from modulos.app.controladores import Usuarios, Administrador, Mensajes, Parametros, Ticket, Login
