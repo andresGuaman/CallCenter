@@ -29,30 +29,48 @@ def login_admin(data):
         else:
             return jsonify({'transaccion':False, 'mensaje':"el usuario no existe"})             
 
-@app.route('/administrador/crear', methods=['POST'])
-def crear_admin():
+@app.route('/administrador/guardar/<string:action>', methods=['POST'])
+def crear_admin(action):
 
-    data = request.get_json()
-    response = validar_admin(data)
+    print (action)
 
-    if response[0]:
-      mongo.db.administradores.insert_one(data)
-      return jsonify({"transaccion":True, "mensaje":"Administrador crearon correctamente", 'data':data})
-    else:
-        return jsonify({'transaccion':False, 'mensaje':response[1], 'data':[]})
+    if action == 'insert':
 
-@app.route('/administrador/update', methods=['POST'])
-def update_admin():
-
-    if request.method == 'POST':
         data = request.get_json()
+        response = validar_admin(data, action)
 
-    if data != None:
+        if response[0]:
+            mongo.db.administradores.insert_one(data)
+            return jsonify({"transaccion":True, "mensaje":"Administrador creado correctamente", 'data':data})
+        else:
+            return jsonify({'transaccion':False, 'mensaje':response[1], 'data':[]})
 
-        data['_id'] = ObjectId(data.get('_id'))
-        print (data)
-        #mongo.db.administradores.update(data)
-        return jsonify({"trnsaccion":True, "mensaje":"se actualizaron los datos correctamente"})
+    if action == 'update':
+
+        data = request.get_json()
+        response = validar_admin(data, action)
+
+        if response[0]:
+            mongo.db.administradores.update_one(
+            {
+                '_id': ObjectId(data.get('_id'))
+            }, 
+            {
+                '$set': {
+                    "usuario": data.get('usuario'),
+                    "correo": data.get('correo'),
+                    "nombre": data.get('nombre'),
+                    "apellido": data.get('apellido'),
+                    "password": data.get('password'),
+                    "foto": "",
+                    "rol": data.get('rol'),
+                    "estado": data.get('estado'),
+                }
+            })
+
+            return jsonify({"transaccion":True, "mensaje":"Administrador editado correctamente", 'data':data})
+        else:
+            return jsonify({'transaccion':False, 'mensaje':response[1], 'data':[]})
 
 @app.route('/administrador/eliminar', methods=['POST'])
 def delete_admin():
@@ -68,7 +86,7 @@ def delete_admin():
 
 #METHODS
 
-def validar_admin(data)->tuple:
+def validar_admin(data, action: str)->tuple: #El parámetro action es para saber si se va a insertar o actualizar al administrador
 
     if validar_emailAdmin(data.get('correo')) == False:
         return (False, 'Correo Incorrecto')
@@ -80,7 +98,10 @@ def validar_admin(data)->tuple:
         return (False, 'Contraseña Incorrecta')
 
     if validar_rol(data.get('rol')) == False:
-        return (False, "Rol Incorrecto")    
+        return (False, "Rol Incorrecto")
+
+    if validar_usuario(data.get('usuario'), action) == False:
+        return (False, "Usuario Incorrecto o repetido")
     
     return (True, 'Datos correctos')
 
@@ -101,5 +122,30 @@ def validar_emailAdmin(correo: str) -> bool:
             return True
         else:
             return False
+    else:
+        return False
+
+def validar_usuario(usuario: str, action: str) -> bool:
+
+    if usuario:
+
+        user_repplaced = usuario.replace('_', 'a').replace('.', 'a').replace('-', 'a')
+
+        if user_repplaced.isalnum() and len(usuario) >= 5 and len(usuario) <= 30:
+        
+            if action == 'insert':
+
+                user_mongo = mongo.db.administradores.find({'usuario':usuario})
+
+                if user_mongo:
+                    return False
+                else:
+                    return True
+
+            else:
+                return True
+        else:
+            return False
+        
     else:
         return False
