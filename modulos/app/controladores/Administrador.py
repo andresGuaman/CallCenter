@@ -37,7 +37,7 @@ def crear_admin():
 
     if response[0]:
       mongo.db.administradores.insert_one(data)
-      return jsonify({"transaccion":True, "mensaje":"los datos se crearon correctamente", 'data':data})
+      return jsonify({"transaccion":True, "mensaje":"Administrador crearon correctamente", 'data':data})
     else:
         return jsonify({'transaccion':False, 'mensaje':response[1], 'data':[]})
 
