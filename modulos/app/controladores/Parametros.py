@@ -24,6 +24,12 @@ def estado_administrador():
             return jsonify({'Correcto':True, 'message':respu[1]})
 
 
+@app.route('/catalogo/eliminar/<string:tipo>/<string:data>', methods =['GET'])
+def eliminar(tipo,data):
+    if request.method == 'GET':
+        res = mongo.db.catalogos.update({},{"$pull":{tipo:data}})
+        return jsonify({'Correcto':True, 'message':'exito'})
+
 
 def clasi(data) -> tuple:
 
