@@ -53,3 +53,42 @@ def turno_ticket(tipo_caso, idturno):
               
     return jsonify({'conteo':contar})    
 
+@app.route('/ticket/casos-abiertos', methods=['GET'])
+def casos_abiertos():
+    
+    if request.method == 'GET':
+
+        data = mongo.db.tickets.find({'estado':'Abierto'})
+
+        if data and data != None:
+            return jsonify({"transaccion":True, 'mensaje':'Petición correcta','data':list(data)})
+        else:
+            return jsonify({"transaccion":False, 'mensaje':'No se pudieron cargar los datos', "data":[]})
+
+@app.route('/ticket/asignarme/<string:ticket_id>/<string:usuario>')
+def asignarme(ticket_id, usuario):
+
+    if request.method == 'GET' and ticket_id and usuario:
+
+        responsable = mongo.db.administradores.find_one({'usuario':usuario})
+
+        if responsable:
+
+            data = mongo.db.tickets.update_one(
+                {
+                    '_id': ObjectId(ticket_id)
+                },
+                {
+                    '$addToSet':
+                    {
+                        'responsable': usuario
+                    },
+                    '$set':
+                    {
+                        'estado':'Asignado'
+                    }
+                })
+
+            return jsonify({"transaccion":True, "mensaje":"Asignado", 'data':[]})
+        return jsonify({"transaccion":False, "mensaje":"No asignado", 'data':[]}) 
+    return jsonify({"transaccion":False, "mensaje":"No Asignado", 'data':[]})
