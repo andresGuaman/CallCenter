@@ -22,12 +22,13 @@ def listar_admin():
 @app.route('/administrador/login/<string:data>', methods=['GET'])
 def login_admin(data):
     if request.method == 'GET':
-        salida = mongo.db.administradores.find({"correo":"'"+data+"'"})
-        print(str(salida))
+
+        salida = mongo.db.administradores.find_one({"correo":str(data)})
+
         if salida:
-            return jsonify({'transaccion':True, 'mensaje':"el usuario  existe"})    
+            return jsonify({'transaccion':True, 'mensaje':"User Logged", 'data':salida})    
         else:
-            return jsonify({'transaccion':False, 'mensaje':"el usuario no existe"})             
+            return jsonify({'transaccion':False, 'mensaje':"el usuario no existe", 'data':[]})             
 
 @app.route('/administrador/guardar/<string:action>', methods=['POST'])
 def crear_admin(action):
