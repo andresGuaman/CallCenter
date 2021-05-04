@@ -23,6 +23,45 @@ client._request_signer.sign = (lambda *args, **kwargs:None)
 
 ROOT_PATCH = os.environ.get('ROOT_PATCH')
 
+@app.route('/detalle/tickets/', methods = ['GET'])
+def consultotal():
+    if request.method == 'GET':
+        dat = mongo.db.tickets.find({})
+        lista = list(dat)
+        if dat == None:
+            return jsonify({'transacción':True, 'message':'No hay datos en la coleccion solicitada', 'data':lista})
+        return jsonify({'transacción':True, 'message':'Consulta exitosa', 'data':lista})    
+
+
+@app.route('/detalle/correo/<string:correo>', methods = ['GET'])
+def consultacorreo(correo):
+    if request.method == 'GET':
+        print(correo)
+        dat = mongo.db.tickets.find({"usuario_email":correo})
+        lista = list(dat)
+        if dat == None:
+            return jsonify({'transacción':True, 'message':'No hay datos en la coleccion solicitada', 'data':lista})
+        return jsonify({'transacción':True, 'message':'Consulta exitosa', 'data':lista})    
+
+@app.route('/detalle/tipocaso/<string:tipo_caso>', methods = ['GET'])
+def consultatipocaso(tipo_caso):
+    if request.method == 'GET':
+        dat = mongo.db.tickets.find({"tipo_caso":tipo_caso})
+        lista = list(dat)
+        if dat == None:
+            return jsonify({'transacción':True, 'message':'No hay datos en la coleccion solicitada', 'data':lista})
+        return jsonify({'transacción':True, 'message':'Consulta exitosa', 'data':lista})    
+
+@app.route('/detalle/estado/<string:estado>', methods = ['GET'])
+def consultaestado(estado):
+    if request.method == 'GET':
+        dat = mongo.db.tickets.find({"estado":estado})
+        lista = list(dat)
+        if dat == None:
+            return jsonify({'transacción':True, 'message':'No hay datos en la coleccion solicitada', 'data':lista})
+        return jsonify({'transacción':True, 'message':'Consulta exitosa', 'data':lista})    
+
+
 @app.route('/detalle/ticket/<string:ticket>', methods = ['GET'])
 def detalleTicket(ticket):
     if request.method == 'GET':
@@ -103,7 +142,7 @@ def cargarIMG(ruta,nombreimagen):
 
 def turno_ticket(tipo_caso, idturno):
     encontrado = 0
-    identifiCaso =tipo_caso[0:3]
+    identifiCaso =tipo_caso[0:3].upper()
     contar = mongo.db.tickets.find({'tipo_caso':tipo_caso,'estado':"Abierto"}).count()
     total = mongo.db.tickets.find().count()
     totalF = int(total)
