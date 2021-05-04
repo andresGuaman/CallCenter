@@ -35,6 +35,7 @@ def detalleTicket(ticket):
 @app.route('/detalle/caso/<string:correo>', methods = ['GET'])
 def data(correo):
     if request.method == 'GET':
+        print(correo)
         dat = mongo.db.tickets.find({"usuario_email":correo})
         lista = list(dat)
         if dat == None:
