@@ -4,6 +4,7 @@ from flask import request, jsonify
 from modulos.app import app, mongo
 import os
 import io
+from datetime import datetime
 from botocore import client
 import boto3
 import base64
@@ -87,6 +88,7 @@ def crear_ticket():
     guardar = mongo.db.tickets.insert_one(data)
     transformarimagen(data["_id"],data["imagenes"])
     turno_ticket(data["tipo_caso"], data["_id"])
+    fecha(data["_id"],data["fecha"])
     return jsonify({"transaccion":True, "mensaje":"ticket creado"})
 
 def transformarimagen(idticket, imagen):
@@ -138,6 +140,11 @@ def cargarIMG(ruta,nombreimagen):
     ruta = io.BytesIO(ruta)
     client.upload_fileobj(ruta, bucket_name, "Ticket/"+nombreimagen+".jpeg",
           ExtraArgs={'ACL':'public-read'})
+
+def fecha(idticket, fechafial):
+    fechafin1 = fechafial
+    fech2 = datetime.strptime(fechafin1,'%m-%d-%Y %H:%M:%S %p')
+    fechas = mongo.db.tickets.update({"_id":idticket},{'$set':{"fecha":fech2}})  
 
 
 def turno_ticket(tipo_caso, idturno):
